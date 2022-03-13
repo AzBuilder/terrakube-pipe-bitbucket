@@ -74,6 +74,32 @@ script:
       DEBUG: "true"
 ```
 
+## Docker Compose Example
+
+This can be used to test the bitbucket pipeline in your local machine.
+
+Build the image:
+```bash
+docker build -t terrakube-pipe:latest .
+```
+
+Run the bitbucket pipe locally:
+```yaml
+version: "3.8"
+services:
+  api-server:
+    image: terrakube-pipe:latest
+    container_name: terrakube-pipe
+    environment:
+      - TERRAKUBE_TENANT_ID=XXXXX
+      - TERRAKUBE_APPLICATION_ID=XXXX
+      - TERRAKUBE_APPLICATION_SECRET=XXXX
+      - TERRAKUBE_ORGANIZATION=XXX
+      - TERRAKUBE_WORKSPACE=XXX
+      - TERRAKUBE_TEMPLATE=XXX
+      - TERRAKUBE_ENDPOINT=XXX
+      - TERRAKUBE_APPLICATION_SCOPE=XXX
+```
 ## Support
 If you’d like help with this pipe, or you have an issue or feature request, let us know.
 
