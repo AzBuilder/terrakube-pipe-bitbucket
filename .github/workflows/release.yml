@@ -12,6 +12,11 @@ jobs:
        VERSION: ${{ github.event.release.tag_name }}
     steps:
     - uses: actions/checkout@v2
+    
+    - name: docker build
+      run: |
+        docker build -t terrakube-pipe:latest  . 
+    
     - name: docker login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
@@ -20,10 +25,10 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     
     - name: Docker tag Pipe Image 
-      run: docker tag $(docker images api-server -q) azbuilder/terrakube-pipe:$VERSION
+      run: docker tag $(docker images terrakube-pipe -q) azbuilder/terrakube-pipe:$VERSION
       
     - name: Docker tag Pipe Image latest
-      run: docker tag $(docker images api-server -q) azbuilder/terrakube-pipe:latest
+      run: docker tag $(docker images terrakube-pipe -q) azbuilder/terrakube-pipe:latest
     
     - name: Docker Push Pipe 
       run: docker push azbuilder/terrakube-pipe:$VERSION
