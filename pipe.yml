@@ -1,5 +1,5 @@
 name: Terrakube pipe
-image: azbuilder/terrakube-pipe:0.0.1
+image: azbuilder/terrakube-pipe:0.0.2
 description: This pipe will trigger a Terrakube job.
 repository: https://github.com/AzBuilder/terrakube-pipe-bitbucket
 maintainer: alespa17@gmail.com
