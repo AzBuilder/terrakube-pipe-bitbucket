@@ -1,4 +1,4 @@
-# Bitbucket Pipelines Pipe: My demo pipe
+# Bitbucket Pipelines Pipe: Terrakube Integration
 
 This pipe is an example to show how easy is to create pipes for Bitbucket Pipelines.
 
@@ -66,7 +66,7 @@ script:
       TERRAKUBE_TENANT_ID: "36857254-c824-409f-96f5-d3f2de37b016"
       TERRAKUBE_APPLICATION_ID: "36857254-c824-409f-96f5-d3f2de37b016"
       TERRAKUBE_APPLICATION_SECRET: "SuperSecret"
-      TERRAKUBE_APPLICATION_SCOPE: "api://Terrakube/.default"
+      TERRAKUBE_APPLICATION_SCOPE: "api://TerrakubeApp/.default"
       TERRAKUBE_ORGANIZATION: "terrakube"
       TERRAKUBE_WORKSPACE: "bitbucket"
       TERRAKUBE_TEMPLATE: "vulnerability-snyk"
