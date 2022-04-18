@@ -60,7 +60,7 @@ Advanced example:
 
 ```yaml
 script:
-  - pipe: azbuilder/terrakube-pipe:1.0.0
+  - pipe: docker://azbuilder/terrakube-pipe:1.0.0
     variables:
       LOGIN_ENDPOINT: "https://login.microsoftonline.com"
       TERRAKUBE_TENANT_ID: "36857254-c824-409f-96f5-d3f2de37b016"
