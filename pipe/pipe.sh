@@ -74,7 +74,7 @@ echo "Template Id: $TERRAKUBE_TEMPLATE_ID"
 
 info "Creating Terrakube Job:"
 
-TERRAKUBE_JOB_ID=$(curl -v -g -H "Authorization: Bearer $TERRAKUBE_TOKEN" -H "Content-Type: application/vnd.api+json" -X POST "${TERRAKUBE_ENDPOINT}/api/v1/organization/$TERRAKUBE_ORGANIZATION_ID/job" --data "$(generate_job_data)" )
+TERRAKUBE_JOB_ID=$(curl -g -H "Authorization: Bearer $TERRAKUBE_TOKEN" -H "Content-Type: application/vnd.api+json" -X POST "${TERRAKUBE_ENDPOINT}/api/v1/organization/$TERRAKUBE_ORGANIZATION_ID/job" --data "$(generate_job_data)" | jq -r '.data.id' )
 
 info "Job Id: $TERRAKUBE_JOB_ID"
 
