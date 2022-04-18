@@ -62,7 +62,7 @@ TERRAKUBE_ORGANIZATION_ID=$(curl -g -H "Authorization: Bearer $TERRAKUBE_TOKEN" 
 
 echo "Organization Id: $TERRAKUBE_ORGANIZATION_ID"
 
-info "Searchving Terrakube Workspace:"
+info "Searching Terrakube Workspace:"
 
 TERRAKUBE_WORKSPACE_ID=$(curl -g -H "Authorization: Bearer $TERRAKUBE_TOKEN" -X GET "${TERRAKUBE_ENDPOINT}/api/v1/organization/$TERRAKUBE_ORGANIZATION_ID/workspace?filter[workspace]=name==${TERRAKUBE_WORKSPACE}" | jq -r '.data[0].id')
 
@@ -76,7 +76,9 @@ info "Creating Terrakube Job:"
 
 TERRAKUBE_JOB_ID=$(curl -g -H "Authorization: Bearer $TERRAKUBE_TOKEN" -H "Content-Type: application/vnd.api+json" -X POST "${TERRAKUBE_ENDPOINT}/api/v1/organization/$TERRAKUBE_ORGANIZATION_ID/job" --data "$(generate_job_data)" | jq -r '.data.id' )
 
-info "Job Id: $TERRAKUBE_JOB_ID"
+info "Terrakube Job Created..."
+
+echo "Job Id: $TERRAKUBE_JOB_ID"
 
 run echo $TERRAKUBE_JOB_ID
 
