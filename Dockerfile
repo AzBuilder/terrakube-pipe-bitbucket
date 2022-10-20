@@ -2,6 +2,7 @@ FROM alpine:3.15.0
 
 RUN apk add --update --no-cache bash &&\
     apk add --no-cache curl &&\
+    apk add --no-cache git &&\
     apk add --no-cache jq
 
 COPY pipe /
