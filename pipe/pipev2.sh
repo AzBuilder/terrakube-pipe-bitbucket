@@ -11,7 +11,8 @@ ORGANIZATION="simple"
 ENDPOINT=""
 PAT=""
 REPO="/c/git/terraform-sample-repository"
-#REPO=$BITBUCKET_CLONE_DIR
+TEMPLATE="Terraform-Plan"
+# REPO="https://github.com/AzBuilder/terraform-sample-repository.git"
 
 # SEARCH ALL FOLDERS WITH CHANGE
 FOLDERS=$(get_folders "main" "$REPO" | sed 's+/++g')
@@ -36,18 +37,25 @@ for WORKSPACE in $FOLDERS; do
     ORGANIZATION_ID=$(search_organization_id "$PAT" "$ENDPOINT" "$ORGANIZATION")
     echo "Organization Id: $ORGANIZATION_ID"
 
+    # SEARCH IF TEMPLATE EXIST
+    TEMPLATE_ID=$(search_template_id "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$TEMPLATE")
+    echo "Template Id: $TEMPLATE_ID"
+
     # SEARCH IF WORKSPACE EXIST
-    WORKSPACE_ID=$(search_workspace_id "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$WORKSPACE_ID")
+    WORKSPACE_ID=$(search_workspace_id "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$WORKSPACE")
     echo "Workspace Id: $WORKSPACE_ID"
 
-    if [[ ! -v "$WORKSPACE_ID" ]]; then 
+    if [[ -v "$WORKSPACE_ID" ]]; then 
       echo "Creating workspace: $WORKSPACE"; 
-    fi
-    # CREATE WORKSPACE ID
+      # CREATE WORKSPACE ID
+      WORKSPACE_ID=$(create_workspace "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$WORKSPACE" "https://github.com/AzBuilder/terraform-sample-repository.git" "$TERRAFORM_VERSION" "$SSH_ID")
 
-    # SEARCH IF TEMPLATE EXIST
+      echo "New workspace id: $WORKSPACE_ID"
+    fi
  
     # CREATE JOB
+    JOB_ID=$(create_job "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$TEMPLATE_ID" "$WORKSPACE_ID")
+    echo "Job id: $JOB_ID"
 
     # WAIT FOR JOB TO BE IN STATUS COMPLETED / FAILED
 
