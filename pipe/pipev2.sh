@@ -11,7 +11,7 @@ ORGANIZATION="simple"
 ENDPOINT=""
 PAT=""
 REPO="/c/git/terraform-sample-repository"
-TEMPLATE="Terraform-Plan"
+TEMPLATE="Terraform-Plan/Apply"
 # REPO="https://github.com/AzBuilder/terraform-sample-repository.git"
 
 # SEARCH ALL FOLDERS WITH CHANGE
@@ -45,7 +45,7 @@ for WORKSPACE in $FOLDERS; do
     WORKSPACE_ID=$(search_workspace_id "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$WORKSPACE")
     echo "Workspace Id: $WORKSPACE_ID"
 
-    if [[ -v "$WORKSPACE_ID" ]]; then 
+    if [[ -z "$WORKSPACE_ID" ]]; then 
       echo "Creating workspace: $WORKSPACE"; 
       # CREATE WORKSPACE ID
       WORKSPACE_ID=$(create_workspace "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$WORKSPACE" "https://github.com/AzBuilder/terraform-sample-repository.git" "$TERRAFORM_VERSION" "$SSH_ID")
@@ -58,10 +58,18 @@ for WORKSPACE in $FOLDERS; do
     echo "Job id: $JOB_ID"
 
     # WAIT FOR JOB TO BE IN STATUS COMPLETED / FAILED
+    STATUS="RUNNING"
+    while [[ "$STATUS" != @(failed|completed|rejected|cancelled) ]];
+    do
+      STATUS=$(search_job_status "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$JOB_ID")
+      sleep 5
+    done
 
+    echo "Job is completed with status: $STATUS"
     # GET THE OUPUTS FROM THE STEP LOGS
+    echo "Logs:"
+    search_job_output "$PAT" "$ENDPOINT" "$ORGANIZATION_ID" "$JOB_ID"
 
-    # SEND LOGS TO THE CONTAINER OUTPUT
   else 
     echo "$TERRAKUBE_FILE does not exist."
   fi

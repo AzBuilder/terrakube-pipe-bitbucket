@@ -5,7 +5,7 @@ function search_organization_id(){
     ENDPOINT=$2
     ORGANIZATION=$3
 
-    RESPONSE=$(curl -s -g -H "Authorization: Bearer $PAT" -X GET "${ENDPOINT}/api/v1/organization?filter[organization]=name==${ORGANIZATION}" | jq -r '.data[0].id' )
+    RESPONSE=$(curl -s -g -H "Authorization: Bearer $PAT" -X GET "${ENDPOINT}/api/v1/organization?filter[organization]=name==${ORGANIZATION}" | jq -r '.data[0].id // empty' )
     if [ 0 -eq $? ]; then
         ORGANIZATION_ID=$RESPONSE
     else
@@ -22,7 +22,7 @@ function search_workspace_id(){
     ORGANIZATION_ID=$3
     WORKSPACE=$4
 
-    RESPONSE=$(curl -s -g -H "Authorization: Bearer $PAT" -X GET "${ENDPOINT}/api/v1/organization/${ORGANIZATION_ID}/workspace?filter[workspace]=name==${WORKSPACE}" | jq -r '.data[0].id')
+    RESPONSE=$(curl -s -g -H "Authorization: Bearer $PAT" -X GET "${ENDPOINT}/api/v1/organization/${ORGANIZATION_ID}/workspace?filter[workspace]=name==${WORKSPACE}" | jq -r '.data[0].id // empty')
     
     if [ 0 -eq $? ]; then
         WORKSPACE_ID=$RESPONSE
@@ -39,7 +39,7 @@ function search_template_id(){
     ORGANIZATION_ID=$3
     TEMPLATE=$4
 
-    RESPONSE=$(curl -s -g -H "Authorization: Bearer $PAT" -X GET "${ENDPOINT}/api/v1/organization/${ORGANIZATION_ID}/template?filter[template]=name==${TEMPLATE}" | jq -r '.data[0].id')
+    RESPONSE=$(curl -s -g -H "Authorization: Bearer $PAT" -X GET "${ENDPOINT}/api/v1/organization/${ORGANIZATION_ID}/template?filter[template]=name==${TEMPLATE}" | jq -r '.data[0].id // empty')
     
     if [ 0 -eq $? ]; then
         TEMPLATE_ID=$RESPONSE
@@ -94,4 +94,37 @@ function create_job(){
     fi; 
 
     echo $JOB_ID
+}
+
+function search_job_status(){
+    PAT=$1
+    ENDPOINT=$2
+    ORGANIZATION_ID=$3
+    JOB_ID=$4
+
+    RESPONSE=$(curl -s -g -H "Authorization: Bearer $PAT" -X GET "${ENDPOINT}/api/v1/organization/${ORGANIZATION_ID}/job/${JOB_ID}" | jq -r '.data.attributes.status // empty' )
+    if [ 0 -eq $? ]; then
+        JOB_STATUS=$RESPONSE
+    else
+        JOB_STATUS="FAILED"
+    fi; 
+
+    echo $JOB_STATUS
+}
+
+function search_job_output(){
+    PAT=$1
+    ENDPOINT=$2
+    ORGANIZATION_ID=$3
+    JOB_ID=$4
+
+    RESPONSE=$(curl -s -g -H "Authorization: Bearer $PAT" -X GET "${ENDPOINT}/api/v1/organization/${ORGANIZATION_ID}/job/${JOB_ID}/step?sort=stepNumber" | jq -r '.data[].attributes // empty' | jq -r '.output // empty' | sed -zn 's/\n/ /p' )
+    > terrakube.output
+    if [ 0 -eq $? ]; then
+        for OUTPUT in $RESPONSE; do
+            curl -s -g -X GET "$OUTPUT" >> "terrakube.output"   
+        done
+    fi; 
+    cat terrakube.output
+    rm terrakube.output
 }
